@@ -15,6 +15,12 @@ public class InventoryServiceApplication {
     }
 
 
+    /*
+     * O Bean criado a seguir carrega no banco de dados dois registros, contudo neste exemplo utiliza-se
+     * um banco de dados H2 em memória, de forma que os dados sempre são apagados quando o serviço para.
+     * Na implementação de um banco de dados real o código abaixo irá carregar dados repetidos na base
+     * a cada execução do serviço.
+     */
     @Bean
     public CommandLineRunner loadInventoryData(InventoryRepository repository){
         return args -> {

@@ -1,5 +1,6 @@
 package br.ednilsonrossi.orderservice.service;
 
+import br.ednilsonrossi.orderservice.dto.InventoryResponseDto;
 import br.ednilsonrossi.orderservice.dto.OrderItemDto;
 import br.ednilsonrossi.orderservice.dto.OrderRequestDto;
 import br.ednilsonrossi.orderservice.model.Order;
@@ -8,8 +9,11 @@ import br.ednilsonrossi.orderservice.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriBuilder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -42,6 +46,7 @@ public class OrderService {
          * Uma alternativa viável é formatar invetory-service para tratar uma lista de skuCode
          * ao invés de apenas um.
          */
+        /*
         Boolean inStock = webClient.get()
                 .uri("http://localhost:8003/api/inventory/" + request.getOrderItemDtoList().get(0).getSkuCode())
                 .retrieve()
@@ -53,7 +58,31 @@ public class OrderService {
         }else{
             throw new IllegalArgumentException("Product is not in stock.");
         }
+         */
 
+        /*
+         * Aqui tratando uma lista de itens existentes no pedido.
+         */
+
+        List<String> skuCodes = order.getOrderItemList().stream()
+                .map(orderItem -> orderItem.getSkuCode())
+                .toList();
+
+        InventoryResponseDto[] inventoryResponseDtoArray = webClient.get()
+                .uri("http://localhost:8003/api/inventory",
+                        uriBuilder -> uriBuilder.queryParam("skuCodeList", skuCodes).build())
+                .retrieve()
+                .bodyToMono(InventoryResponseDto[].class)
+                .block();
+
+        boolean allProductsInStock = Arrays.stream(inventoryResponseDtoArray)
+                .allMatch(inventoryResponseDto -> inventoryResponseDto.isInStock());
+
+        if(allProductsInStock){
+            repository.save(order);
+        }else{
+            throw new IllegalArgumentException("Product is not in stock.");
+        }
     }
 
 }

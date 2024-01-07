@@ -21,10 +21,11 @@ import java.util.UUID;
 public class OrderService {
 
     private final OrderRepository repository;
-    private final WebClient webClient;
+    private final WebClient.Builder webClientBuilder;
 
     public void placeOrder(OrderRequestDto request) {
         Order order = new Order();
+
         order.setOrderNumber(UUID.randomUUID().toString());
 
         order.setOrderItemList(new ArrayList<>());
@@ -47,7 +48,7 @@ public class OrderService {
          * ao invés de apenas um.
          */
         /*
-        Boolean inStock = webClient.get()
+        Boolean inStock = webClientBuilder.build().get()
                 .uri("http://localhost:8003/api/inventory/" + request.getOrderItemDtoList().get(0).getSkuCode())
                 .retrieve()
                 .bodyToMono(Boolean.class)
@@ -68,8 +69,8 @@ public class OrderService {
                 .map(orderItem -> orderItem.getSkuCode())
                 .toList();
 
-        InventoryResponseDto[] inventoryResponseDtoArray = webClient.get()
-                .uri("http://localhost:8003/api/inventory",
+        InventoryResponseDto[] inventoryResponseDtoArray = webClientBuilder.build().get()
+                .uri("http://inventory-ms/api/inventory",
                         uriBuilder -> uriBuilder.queryParam("skuCodeList", skuCodes).build())
                 .retrieve()
                 .bodyToMono(InventoryResponseDto[].class)

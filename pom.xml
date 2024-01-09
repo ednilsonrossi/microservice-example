@@ -21,6 +21,7 @@
         <module>order-service</module>
         <module>inventory-service</module>
         <module>discovery-service</module>
+        <module>api-gateway</module>
     </modules>
 
     <properties>
@@ -29,6 +30,8 @@
         <spring-cloud.version>2023.0.0</spring-cloud.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+
 
     <dependencyManagement>
         <dependencies>

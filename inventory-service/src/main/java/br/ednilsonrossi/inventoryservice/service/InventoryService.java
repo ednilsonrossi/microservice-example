@@ -4,6 +4,7 @@ import br.ednilsonrossi.inventoryservice.dto.InventoryResponseDto;
 import br.ednilsonrossi.inventoryservice.model.Inventory;
 import br.ednilsonrossi.inventoryservice.repository.InventoryRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class InventoryService {
 
@@ -36,7 +38,9 @@ public class InventoryService {
                     .inStock(inventory.getQuantity() > 0)
                     .quantity(inventory.getQuantity())
                     .build());
+            log.info("Verificado SKUCODE: " + inventory.getSkuCode());
         }
+
         return response;
     }
 }

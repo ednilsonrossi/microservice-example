@@ -2,6 +2,7 @@ package br.ednilsonrossi.orderservice.controller;
 
 import br.ednilsonrossi.orderservice.dto.OrderRequestDto;
 import br.ednilsonrossi.orderservice.service.OrderService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,8 +18,13 @@ public class OrderController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @CircuitBreaker(name = "inventory", fallbackMethod = "fallbackMethod")
     public String handleOrder(@RequestBody OrderRequestDto requestDto){
         service.placeOrder(requestDto);
         return "Order placed successfully";
+    }
+
+    public String fallbackMethod(OrderRequestDto requestDto, RuntimeException runtimeException){
+        return "Oops! Something went wrong.";
     }
 }

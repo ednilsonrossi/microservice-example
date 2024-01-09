@@ -33,9 +33,9 @@ public class InventoryService {
     @SneakyThrows
     @Transactional(readOnly = true)
     public List<InventoryResponseDto> isAllInStock(List<String> skuCodeList) {
-        log.info("Início da espera");
-        Thread.sleep(3000);
-        log.info("Fim da espera.");
+//        log.info("Início da espera");
+//        Thread.sleep(3000);
+//        log.info("Fim da espera.");
         List<InventoryResponseDto> response = new ArrayList<>();
         for(Inventory inventory : repository.findBySkuCodeIn(skuCodeList)){
             response.add(InventoryResponseDto.builder()

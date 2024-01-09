@@ -4,6 +4,7 @@ import br.ednilsonrossi.inventoryservice.dto.InventoryResponseDto;
 import br.ednilsonrossi.inventoryservice.model.Inventory;
 import br.ednilsonrossi.inventoryservice.repository.InventoryRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,8 +30,12 @@ public class InventoryService {
         throw new IllegalArgumentException("The sku-code not exists.");
     }
 
+    @SneakyThrows
     @Transactional(readOnly = true)
     public List<InventoryResponseDto> isAllInStock(List<String> skuCodeList) {
+        log.info("Início da espera");
+        Thread.sleep(3000);
+        log.info("Fim da espera.");
         List<InventoryResponseDto> response = new ArrayList<>();
         for(Inventory inventory : repository.findBySkuCodeIn(skuCodeList)){
             response.add(InventoryResponseDto.builder()
